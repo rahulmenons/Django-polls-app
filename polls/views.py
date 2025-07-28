@@ -19,12 +19,12 @@ def vote(request, question_id):
         # Redirect to the results page to prevent double-posting
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
-# 3 Views to be created index(5 request questions),detail(one question and choice),results.
+# 3 Views to be created index(all questions),detail(one question and choice),results.
 #render takes template with dictionary and creates a webpage/HTML basically
 
 
 def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    latest_question_list = Question.objects.order_by('-pub_date')
     return render(request, 'polls/index.html', {'latest_question_list': latest_question_list})
 def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
