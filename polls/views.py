@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Question, Choice
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
@@ -24,8 +25,21 @@ def vote(request, question_id):
 
 
 def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')
-    return render(request, 'polls/index.html', {'latest_question_list': latest_question_list})
+    query = request.GET.get('q')
+    if query:
+        question_list = Question.objects.filter(question_text__icontains=query).order_by('-pub_date')
+    else:
+        question_list = Question.objects.order_by('-pub_date')
+
+    paginator = Paginator(question_list, 5)  # Show 5 questions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'polls/index.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
+
 def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/details.html', {'question': question})
