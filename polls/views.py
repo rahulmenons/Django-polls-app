@@ -3,6 +3,24 @@ from .models import Question, Choice
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.db import connections
+from django.db.utils import OperationalError
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET'])
+def alive(request):
+    return Response({'status': 'alive'})
+
+@api_view(['GET'])
+def ready(request):
+    db_conn = connections['default']
+    try:
+        db_conn.cursor()
+    except OperationalError:
+        return Response({'status': 'not ready'}, status=503)
+    return Response({'status': 'ready'})
+
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
