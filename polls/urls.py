@@ -8,4 +8,6 @@ urlpatterns = [
     path('<int:question_id>/results/', views.results, name='results'),
     path('alive/', views.alive, name='alive'),
     path('ready/', views.ready, name='ready'),
+    path('health/', views.health, name='health'),
+
 ]

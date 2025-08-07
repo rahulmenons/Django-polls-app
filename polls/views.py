@@ -7,6 +7,7 @@ from django.db import connections
 from django.db.utils import OperationalError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import psutil
 
 @api_view(['GET'])
 def alive(request):
@@ -20,6 +21,18 @@ def ready(request):
     except OperationalError:
         return Response({'status': 'not ready'}, status=503)
     return Response({'status': 'ready'})
+
+@api_view(['GET'])
+def health(request):
+    cpu_percent = psutil.cpu_percent(interval=1)  # % CPU usage
+    ram = psutil.virtual_memory()
+    mem_percent = ram.percent                     # % RAM used
+    mem_used_gb = round(ram.used / 1e9, 2)        # Used RAM in GB
+    return Response({
+        "cpu_usage_percent": cpu_percent,
+        "ram_usage_percent": mem_percent,
+        "ram_used_gb": mem_used_gb
+    })
 
 
 def vote(request, question_id):
