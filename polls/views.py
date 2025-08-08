@@ -7,41 +7,15 @@ from django.db import connections
 from django.db.utils import OperationalError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .weather import fetch_and_save_weather
 import psutil
 import requests
 import csv
 
-# Fill in your details:
-API_KEY = "c2e5f290c9fd9152fc2f77c42c9571d5"
-CITY = "Kochi"
-URL = f"https://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}"
-
-response = requests.get(URL)
-data = response.json()
-
-# Example: Extract temperature, condition, timestamp
-record = {
-    'datetime': data['dt'],
-    'temperature': data['main']['temp'],
-    'condition': data['weather'][0]['main']
-}
-
-# B. Append data to a CSV file
-csv_file = 'weather_data.csv'
-header = ['datetime', 'temperature', 'condition']
-
-# If file does not exist, write header
-try:
-    with open(csv_file, 'x', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=header)
-        writer.writeheader()
-except FileExistsError:
-    pass  # File already exists
-
-# Write the data row
-with open(csv_file, 'a', newline='') as f:
-    writer = csv.DictWriter(f, fieldnames=header)
-    writer.writerow(record)
+@api_view(['GET'])
+def weather_view(request):
+    record = fetch_and_save_weather()
+    return Response(record)
 
 @api_view(['GET'])
 def alive(request):
@@ -58,7 +32,7 @@ def ready(request):
 
 @api_view(['GET'])
 def health(request):
-    cpu_percent = psutil.cpu_percent(interval=1)  # % CPU usage
+    cpu_percent = psutil.cpu_percent(interval=0.1)  # % CPU usage
     ram = psutil.virtual_memory()
     mem_percent = ram.percent                     # % RAM used
     mem_used_gb = round(ram.used / 1e9, 2)        # Used RAM in GB
