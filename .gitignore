@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Virtual environment
+venv/
+
+# Django specific
+db.sqlite3
+*.pot
+*.pyc
+
+# VS Code or other IDE/editor files
+.vscode/
+.idea/
+*.swp
+
+# Environment files
+.env
+
+# Migrations (optional - keep if you don’t want to track them)
+**/migrations/
+!**/migrations/__init__.py
+
+# System files
+.DS_Store
+Thumbs.db
