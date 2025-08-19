@@ -8,6 +8,8 @@ from django.db.utils import OperationalError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .weather import fetch_and_save_weather
+from django.contrib.auth.decorators import login_required
+
 import psutil
 import requests
 import csv
@@ -42,7 +44,7 @@ def health(request):
         "ram_used_gb": mem_used_gb
     })
 
-
+@login_required(login_url='/login/')
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:

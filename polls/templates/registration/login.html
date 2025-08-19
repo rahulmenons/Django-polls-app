@@ -1,0 +1,39 @@
+{% extends "polls/base.html" %}
+
+{% block content %}
+<div style="max-width:400px; margin: 50px auto; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align:center;">Login</h2>
+
+    {% if form.errors %}
+        <p style="color: red;">Your username and password didn’t match. Please try again.</p>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>You are logged in but don’t have permission to view this page.</p>
+        {% else %}
+            <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:15px;">
+            <label for="id_username">Username:</label><br>
+            {{ form.username }}
+        </div>
+        <div style="margin-bottom:15px;">
+            <label for="id_password">Password:</label><br>
+            {{ form.password }}
+        </div>
+
+        <button type="submit" style="width:100%; padding:10px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">
+            Login
+        </button>
+    </form>
+
+    <p style="text-align:center; margin-top:15px;">
+        <a href="{% url 'password_reset' %}">Forgot password?</a>
+    </p>
+</div>
+{% endblock %}
