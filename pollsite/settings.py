@@ -141,4 +141,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_REDIRECT_URL = '/polls/'       # where to go after successful login
-LOGOUT_REDIRECT_URL = '/polls/'      # optional: where to go after logout
+LOGOUT_REDIRECT_URL = '/accounts/login/'      # optional: where to go after logout

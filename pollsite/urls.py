@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', lambda request: redirect('/accounts/login/')),  # redirects it to login page when u click on the default development server
     path('polls/', include('polls.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # <-- Add this
 ]
-
